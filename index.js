@@ -13,6 +13,7 @@ const app = express()
 // <<<<<<<<<<<< PREDEFINING THE ENVORMENT VARIABLE THE WEBSITE >>>>>>>>>>>>>>
 const {
     SECRET = 'my name is george',
+    MONGODB_URI = 'mongodb://localhost/fasthelpers'
 } = process.env
 
 const sessObj = {
@@ -20,17 +21,18 @@ const sessObj = {
 }
 
 
+
 app.use(bodyparse())
 app.use(bodyparse.urlencoded({ extended: true }))
 app.use(cors());
 app.use(expressSession(sessObj));
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/fasthelpers',(error)=>{
+mongoose.connect("mongodb+srv://me:aaaa@fasthelper-ljine.mongodb.net/test?retryWrites=true" ,(error)=>{
     if(error) return error
     console.log('Database connected');
     
 })
-mongoose.connect();
+
 
 app.use('/api', authRoutes)
 app.use('/api/mail', mainRoute)
