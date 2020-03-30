@@ -27,11 +27,8 @@ app.use(bodyparse.urlencoded({ extended: true }))
 app.use(cors());
 app.use(expressSession(sessObj));
 
-mongoose.connect("mongodb+srv://me:aaaa@fasthelper-ljine.mongodb.net/test?retryWrites=true" ,(error)=>{
-    if(error) return error
-    console.log('Database connected');
-    
-})
+mongoose.connect("mongodb+srv://me:aaaaaaaa@cluster0-ydjhc.mongodb.net/test?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true
+ })
 
 
 app.use('/api', authRoutes)
