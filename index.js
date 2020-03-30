@@ -21,8 +21,11 @@ app.use(bodyparse.urlencoded({ extended: true }))
 app.use(cors());
 
 
-mongoose.connect("mongodb+srv://me:aaaaaaaa@cluster0-ydjhc.mongodb.net/test?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true
- })
+mongoose.connect("mongodb://me:nkwanta442@ds159293.mlab.com:59293/mlmapi", (ee)=>{
+    if(ee) return ee;
+    console.log('db connected');
+    
+})
 
 
 app.use('/api', authRoutes)
