@@ -1,5 +1,5 @@
 const express = require('express');
-const expressSession = require('express-session');
+
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyparse = require('body-parser');
@@ -11,21 +11,15 @@ const settingsRoute = require('./api/mainRoute/settings')
 const app = express()
 
 // <<<<<<<<<<<< PREDEFINING THE ENVORMENT VARIABLE THE WEBSITE >>>>>>>>>>>>>>
-const {
-    SECRET = 'my name is george',
-    MONGODB_URI = 'mongodb://localhost/fasthelpers'
-} = process.env
 
-const sessObj = {
-    secret : SECRET
-}
+
 
 
 
 app.use(bodyparse())
 app.use(bodyparse.urlencoded({ extended: true }))
 app.use(cors());
-app.use(expressSession(sessObj));
+
 
 mongoose.connect("mongodb+srv://me:aaaaaaaa@cluster0-ydjhc.mongodb.net/test?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true
  })
