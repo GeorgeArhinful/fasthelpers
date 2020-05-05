@@ -7,7 +7,7 @@ const SECRET = require('./../../config/auth');
 const MAILL = require('./../../config/mail');
 const bcrypt = require('bcrypt');
 const UnpayedModel = require('./../../schma/main/unpayed')
-
+const random = require("random-key");
 
 const NextOfkingsModel = require('./../../schma/main/nextOfKings');
 
@@ -277,7 +277,9 @@ module.exports.passwordRest = (req , res) => {
 // token
     if(!query.token && body.email){
         // send the user an email with token 
-        let token = 'george442.@23'
+        let token = random.generateBase30(8)
+
+
         let transporter = nodeMailer.createTransport({
             service: 'gmail',
             secure: true,
@@ -299,7 +301,7 @@ module.exports.passwordRest = (req , res) => {
             if(!user._id) return res.send(404,{success: false, message:'invalid email or email does not exist in our database',err,response:null});                
             
             var mailOptions = {     
-                from: 'contact.fasthelpers@gmail.com',
+                from: MAILL.EMAIL_ADDRESS,
                 to: `${body.email}`,
                 subject: 'Password reset',
                 text: `Hello ${user.firstName} , use this token provided to reset your password. TOKEN = ${token}. this token expires in the next 1hr`,

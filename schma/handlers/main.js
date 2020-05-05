@@ -48,7 +48,6 @@ module.exports.decryptKey = function (userKey, res) {
     // Add charaters to the userpassword and encript it
     let  newKey = SECRET.PASSWORD_SALT_LEFT + userKey + SECRET.PASSWORD_SALT_RIGTH
     return bcrypt.compare(newKey, this.uniqueKey, (err, hashed) => {
-        console.log(this.uniqueKey, '>>>', userKey);
         
         if(err) return console.log(err)
         if(hashed){
@@ -78,7 +77,6 @@ module.exports.decryptPassword = function(userPassword, res){
                         // <<<<< TODO: ERROR HANDLER
                         console.log(err);
                     }
-                    console.log(token);
                 return res.send(200,{cookie:token, success: true, message:'user login successful',err:null,response:this,logId});                            
                 })            
             })

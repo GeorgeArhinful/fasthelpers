@@ -21,10 +21,11 @@ module.exports.contactUs = (req, res) => {
        })
     var mailOptions = {     
         from: `${body.email}`,
-        to: 'contact.fasthelpers@gmail.com',
-        subject: 'Hello ',
-        text: `Hello world my name is ${body.name} , ${body.msg}`,
+        to: MAILL.EMAIL_ADDRESS,
+        subject: `Message from ${body.email}, website contact us `,
+        text: `Hello Fasthelpers my name is ${body.name} , ${body.msg}`,
     };
+    
     transporter.sendMail(mailOptions, function(error, info){     
         if(error) return res.send(200,{success: false, message:'Email sent unsuccessfull',err:error,response:null});                     
         console.log('Message sent: ' + info.response); 

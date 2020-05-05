@@ -40,6 +40,9 @@ app.use(updateLevel.updateLevel)
 app.get('/*', function (req, res) {
     res.sendFile('index.html');
 })
+app.get('**', function (req, res) {
+    res.sendFile('index.html');
+})
 
 var port = process.env.PORT || 9000;
 
