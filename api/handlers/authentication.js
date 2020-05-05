@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const SECRET = require('./../../config/auth');
 const MAILL = require('./../../config/mail');
 const bcrypt = require('bcrypt');
+const UnpayedModel = require('./../../schma/main/unpayed')
 
 
 const NextOfkingsModel = require('./../../schma/main/nextOfKings');
@@ -19,11 +20,60 @@ let updateUserInfo = (obj , update)=>{
     return result
 }
 
+
+module.exports.getPayment = function(req , res){
+    let {query} = req
+        jwt.verify(query.token, SECRET.JWT_SECRET_KEY,(err,result)=>{
+        if(err) return res.send(500,{success: false, message:'cheaking user Failed',err,response:[]}); 
+        LogModel.findOne({_id:result.logId} ,(err, log)=>{
+            if(err) return res.send(500,{success: false, message:'finding log failed, try in a few minte DB OUT',err,response:[]});                
+            UnpayedModel.find({userId: log.userId},(err,data)=>{
+                if(err){
+                     return res.send(500,{success: false, message:'Try to reload the page again in a few minte DB OUT',err,response:[]});                
+                }else if(!data.length){
+                    return res.send(401,{success: false, message:'incorrect user name or password',err:null,response:[]});                
+                }else{
+                    // check to see if password is valid 
+                    return res.send(200,{success: true, message:'payment uploaded',err,response:data,logId:result.logId});                
+                }
+            })
+        })
+
+    })
+} 
+
+
+
+
+module.exports.getPortals = function(req , res){
+    let {query} = req
+        jwt.verify(query.token, SECRET.JWT_SECRET_KEY,(err,result)=>{
+            if(err) return res.send(500,{success: false, message:'cheaking user Failed',err,response:[]}); 
+            LogModel.findOne({_id:result.logId} ,(err, log)=>{
+                if(err) return res.send(500,{success: false, message:'finding log failed, try in a few minte DB OUT',err,response:[]});                
+                UserModel.find({ownerId: log.userId},(err,data)=>{
+                if(err){
+                     return res.send(500,{success: false, message:'Try to reload the page again in a few minte DB OUT',err,response:[]});                
+                }else if(!data.length){
+                    return res.send(401,{success: false, message:'incorrect user name or password',err:null,response:[]});                
+                }else{
+                    // check to see if password is valid 
+                    return res.send(200,{success: true, message:'payment uploaded',err,response:data,logId:result.logId});                
+                }
+            })
+        })
+
+    })
+} 
+
+
+
+
+
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SIGNUP EDNPOINT  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 
 
 module.exports.register = function(req,res){
     let credencial = req.body;
-    console.log(req.body);
     
     // TODO :
     // 1. validate input 
@@ -75,14 +125,12 @@ module.exports.nextOfkingSignUp  = (req , res) => {
     newUser.save((err, kings)=>{
         if(err) return res.send(500,{success: false, message:'Try to signup again in a few minte DB OUT',err,response:null});                
         UserModel.findOneAndUpdate({ _id: body.ownerId }, { setNextOfKin: true, nextOfKin: id,token:''} , (err, data)=>{
-            console.log(data);
             
             if(err) return console.log(err);
             
             // res.send(500,{success: false, message:'Try to signup again in a few minte DB OUT',err,response:null});
             
             UserModel.findOne({_id:body.ownerId}, (err,userInfo)=>{
-                console.log(userInfo);
                 
             if(err) return res.send(500,{success: false, message:'Try to signup again in a few minte DB OUT',err,response:null});
                 return res.send(200,{success: true, message:'Next Of KingSignUp Successfull',err,response: userInfo});                            
@@ -104,7 +152,6 @@ module.exports.accoutSetUp = (req , res) => {
             if (err) return console.log(err);
             // res.send(500,{success: false, message:'Try to signup again in a few minte DB OUT',err,response:null});
             UserModel.findOne({ _id: body.userId }, (err, userInfo) => {
-                console.log(userInfo);
 
                 if (err) return res.send(500, { success: false, message: 'Try to signup again in a few minte DB OUT', err, response: null });
                 return res.send(200, { success: true, message: 'Accounting Successfull', err, response: userInfo });
@@ -187,12 +234,10 @@ module.exports.signinChecker = (req , res) => {
 
 module.exports.passwordRestFromDashboard = (req , res) =>{
     let {body} = req
-    console.log(body);
     
     if(body.id && body.oldPassword && !body.password){
         UserModel.findOne({_id:body.id},(err,user)=>{
             if(err) return res.send(500, {success: false, message: 'Database down try again in a few minite'})
-            console.log(user);
             
             if(!user._id) return res.send(404, {success:false , message: 'user not found'})
             return user.decrypt(body.oldPassword,res)
@@ -225,7 +270,6 @@ module.exports.passwordRestFromDashboard = (req , res) =>{
 
 module.exports.passwordRest = (req , res) => {
     let {body , query} = req;
-    console.log(body);
     
 // KEYs require in the body 
 // email , password
@@ -343,7 +387,6 @@ module.exports.loadAccount = (req, res)=>{
             AccountModel.findOne({ userId: log.userId }, (err, account) => {
                 if (err) return res.send(500, { success: false, message: 'updating failed, try in a few minte DB OUT', err, response: null });
                 if (!account._id) return res.send(404, { success: false, message: 'Not found', err, response: {} });
-                console.log(account);
                 
                 return res.send(200, { success: true, message: 'Account loaded Successfull', err, response: account, logId: hased.logId });
             })
@@ -366,9 +409,27 @@ module.exports.loadNextOfKin = (req, res) => {
             NextOfkingsModel.findOne({ ownerId: log.userId }, (err, nextOfKin) => {
                 if (err) return res.send(500, { success: false, message: 'updating failed, try in a few minte DB OUT', err, response: null });
                 if (!nextOfKin._id) return res.send(404, { success: false, message: 'Not found', err, response: {} });
-                console.log(nextOfKin);
 
                 return res.send(200, { success: true, message: 'Account loaded Successfull', err, response: nextOfKin, logId: hased.logId });
+            })
+        })
+    })
+}
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< VALIDATE USER UNIQUE KEY >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+module.exports.checkUniqueKey = (req , res)=>{
+    let {body,query} = req;
+    jwt.verify(query.token, SECRET.JWT_SECRET_KEY, (err, hased) => {
+        if (err) return res.send(500, { success: false, message: 'Decryption Failed', err, response: null });
+        LogModel.findOne({ _id: hased.logId }, (err, log) => {
+            if (err) return res.send(500, { success: false, message: 'finding log failed, try in a few minte DB OUT', err, response: null });
+
+            UserModel.findOne({ _id: log.userId }, (err, user) => {
+                if (err) return res.send(500, { success: false, message: 'updating failed, try in a few minte DB OUT', err, response: null });
+                if (!user._id) return res.send(404, { success: false, message: 'Not found', err, response: {} });
+                return user.decryptKey(body.key , res)     
             })
         })
     })

@@ -29,7 +29,35 @@ module.exports.encryptPassword = function(next){
         })
     })
 }
+module.exports.encryptUniqueKey = function (next) {
+    let newKey = SECRET.PASSWORD_SALT_LEFT + this.uniqueKey + SECRET.PASSWORD_SALT_RIGTH
+    bcrypt.genSalt(10, (err, salt) => {
+        if (err) return null;
+        bcrypt.hash(newKey, salt, (err, hash) => {
+            if (err) return null;
+            this.uniqueKey = hash
+            next()
 
+        })
+    })
+}
+
+
+module.exports.decryptKey = function (userKey, res) {
+    // TODO : 
+    // Add charaters to the userpassword and encript it
+    let  newKey = SECRET.PASSWORD_SALT_LEFT + userKey + SECRET.PASSWORD_SALT_RIGTH
+    return bcrypt.compare(newKey, this.uniqueKey, (err, hashed) => {
+        console.log(this.uniqueKey, '>>>', userKey);
+        
+        if(err) return console.log(err)
+        if(hashed){
+            return res.send(200,{ success: true, message:'successful',err:null});                            
+        }else{
+           return res.send(201,{success: false, message:'incorrect key',err:null});                
+        }
+    })
+}
 
 
 

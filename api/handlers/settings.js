@@ -10,7 +10,6 @@ const NextOfkingsModel = require('./../../schma/main/nextOfKings');
 
 module.exports.updateProfile = (req , res)=>{
     let {query , body} = req;
-    console.log(body , query);
     
     jwt.verify(query.token,SECRET.JWT_SECRET_KEY,(err , hased)=>{
         if(err) return res.send(500,{success: false, message:'Decryption Failed',err,response:null}); 

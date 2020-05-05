@@ -4,69 +4,68 @@ const bcrypt = require('bcrypt')
 
 const {
     SALT_ROUND = 100
-}  = process.env
+} = process.env
 
 
 const Schema = mongoose.Schema
 
 const nextOfkingsSchema = new Schema({
-    firstName :{
-        require : true,
-        type : String,
-        default:'',
+    firstName: {
+        require: true,
+        type: String,
+        default: '',
 
     },
-    lastName : {
-        require : true,
-        type : String,
+    lastName: {
+        require: true,
+        type: String,
         default: '',
     },
-    address : {
-        type : String,
+    address: {
+        type: String,
         default: null,
         default: '',
     },
-    email : {
-        require : true,
-        type : String,
+    email: {
+        require: true,
+        type: String,
         default: '',
     },
-    relation:String,
+    relation: String,
     day: String,
-    month : String,
+    month: String,
     year: String,
     number: String,
-    country:{
+    country: {
         type: String,
         default: '',
     },
-    region:{
+    region: {
         type: String,
         default: '',
     },
-    town:{
+    town: {
         type: String,
         default: '',
     },
     residencialAddress: {
         type: String,
         default: '',
-    }
-    ,
+    },
     ownerId: {
-        type : Schema.Types.ObjectId,
-        ref : 'Users',
+        type: Schema.Types.ObjectId,
+        ref: 'Users',
     },
-    date : {
-        type : String,
-        default : Date.now() 
+    date: {
+        type: String,
+        default: Date.now()
     },
-    createdOn:{
-        type : String,
-        default : Date.now()
+    createdOn: {
+        type: String,
+        default: Date.now()
     },
 })
 
-let NextOfkingsModel =  mongoose.model('NextOfkin',nextOfkingsSchema)
+let NextOfkingsModel = mongoose.model('NextOfkin', nextOfkingsSchema)
 
 module.exports = NextOfkingsModel
