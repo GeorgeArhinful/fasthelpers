@@ -27,6 +27,8 @@ module.exports.contactUs = (req, res) => {
     };
     
     transporter.sendMail(mailOptions, function(error, info){     
+        console.log(error);
+        
         if(error) return res.send(200,{success: false, message:'Email sent unsuccessfull',err:error,response:null});                     
         console.log('Message sent: ' + info.response); 
         return res.send(200,{success: true, message:'Email sent Successfull',err:null,response:null});                
