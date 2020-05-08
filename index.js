@@ -4,11 +4,11 @@ const cors = require('cors');
 const bodyparse = require('body-parser');
 const authRoutes = require('./api/mainRoute/authentication');
 const mainRoute = require('./api/mainRoute/mails');
-const settingsRoute = require('./api/mainRoute/settings')
-const updateLevel = require('./api/handlers/levelUpdate')
+const settingsRoute = require('./api/mainRoute/settings');
 
 
-const app = express()
+
+const app = express();
 
 // <<<<<<<<<<<< PREDEFINING THE ENVORMENT VARIABLE THE WEBSITE >>>>>>>>>>>>>>
 
@@ -16,36 +16,36 @@ const app = express()
 
 
 
-app.use(bodyparse())
-app.use(bodyparse.urlencoded({ extended: true }))
+app.use(bodyparse());
+app.use(bodyparse.urlencoded({ extended: true }));
 app.use(cors());
 
-const productionUrl = "mongodb://me:nkwanta442@ds159293.mlab.com:59293/mlmapi"
-const developmentUrl = "mongodb://localhost/fasthelpers"
+const productionUrl = "mongodb://me:nkwanta442@ds159293.mlab.com:59293/mlmapi";
+const developmentUrl = "mongodb://localhost/fasthelpers";
 
-mongoose.connect(productionUrl, (ee) => {
+mongoose.connect(developmentUrl, (ee) => {
     if(ee) return ee;
-    let cal = setInterval(updateLevel.updateLevel,100000)
     console.log('db connected');
     
-})
+});
 
 
-app.use('/api', authRoutes)
-app.use('/api/mail', mainRoute)
-app.use('/api/settings' , settingsRoute)
-app.use(express.static('./uploads'))
-app.use(express.static('./build'))
-app.use(updateLevel.updateLevel)
+app.use('/api', authRoutes);
+app.use('/api/mail', mainRoute);
+app.use('/api/settings' , settingsRoute);
+app.use(express.static('./uploads'));
+app.use(express.static('./build'));
+
 app.get('/*', function (req, res) {
     res.sendFile('index.html');
-})
+});
 app.get('**', function (req, res) {
     res.sendFile('index.html');
-})
+});
+
 
 var port = process.env.PORT || 9000;
 
 app.listen(port,()=>{
     console.log('server start on port 9000' );
-})
+});
