@@ -23,7 +23,7 @@ app.use(cors());
 const productionUrl = "mongodb://me:nkwanta442@ds159293.mlab.com:59293/mlmapi";
 const developmentUrl = "mongodb://localhost/fasthelpers";
 
-mongoose.connect(developmentUrl, (ee) => {
+mongoose.connect(productionUrl, (ee) => {
     if(ee) return ee;
     console.log('db connected');
     
